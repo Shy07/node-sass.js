@@ -15,11 +15,27 @@
  util = require('util'),
  path = require('path'),
  glob = require('glob'),
- sass = require('node-sass/lib').sass,
- render = require('node-sass/lib/render'),
  stdout = require('stdout-stream'),
  stdin = require('get-stdin'),
  fs = require('fs');
+
+const compile = require('../sass.js/dist/sass.node')
+const render = (options, emitter) => {
+  const { src } = options
+  const compileOptions = {
+    style: compile.Sass.style.expanded,
+  }
+  compile.Sass.options('defaults');
+  const file = src.replace(process.cwd() + '/', '')
+  compile(file, compileOptions, function (result) {
+    if (result.text) {
+      const filename = `${file}`.replace(/\.s[ac]ss/g, '.css')
+      fs.writeFileSync(filename, result.text)
+    } else {
+      console.log(result)
+    }
+  })
+}
 
 /**
  * Initialize CLI
