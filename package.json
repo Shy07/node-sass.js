@@ -1,6 +1,6 @@
 {
   "name": "node-sass.js",
-  "version": "0.0.6",
+  "version": "0.7.0",
   "description": "A thin wrapper around sass.js bassing on node-sass-chokidar.",
   "bin": {
     "node-sass.js": "bin/node-sass.js"

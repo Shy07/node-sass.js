@@ -31,7 +31,19 @@ var render = function render(options, emitter) {
       sourceMapContents = options.sourceMapContents,
       dest = options.dest,
       indentType = options.indentType,
-      indentWidth = options.indentWidth;
+      indentWidth = options.indentWidth,
+      indentedSyntax = options.indentedSyntax,
+      quiet = options.quiet,
+      linefeed = options.linefeed,
+      sourceComments = options.sourceComments;
+
+
+  var linefeedMap = {
+    cr: '\r',
+    crlf: '\r\n',
+    lf: '\n',
+    lfcr: '\n\r'
+  };
 
   var compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
@@ -39,7 +51,10 @@ var render = function render(options, emitter) {
     sourceMapEmbed: sourceMapEmbed,
     sourceMapContents: sourceMapContents,
     sourceMapOmitUrl: omitSourceMapUrl,
-    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' ')
+    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' '),
+    indentedSyntax: indentedSyntax,
+    linefeed: linefeedMap[linefeed] || '\n',
+    comments: sourceComments
   };
   compile.Sass.options('defaults');
   var file = src.replace(process.cwd() + '/', '');
@@ -51,7 +66,7 @@ var render = function render(options, emitter) {
         fs.writeFileSync(sourceMap, JSON.stringify(result.map));
       }
     } else {
-      console.log(result);
+      if (!quiet) console.log(result);
     }
   });
 };

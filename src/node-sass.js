@@ -31,15 +31,30 @@ const render = (options, emitter) => {
     sourceMapContents,
     dest,
     indentType,
-    indentWidth
+    indentWidth,
+    indentedSyntax,
+    quiet,
+    linefeed,
+    sourceComments
   } = options
+
+  const linefeedMap = {
+    cr: '\r',
+    crlf: '\r\n',
+    lf: '\n',
+    lfcr: '\n\r'
+  }
+
   const compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
     sourceMapRoot,
     sourceMapEmbed,
     sourceMapContents,
     sourceMapOmitUrl: omitSourceMapUrl,
-    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' ')
+    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' '),
+    indentedSyntax,
+    linefeed: linefeedMap[linefeed] || '\n',
+    comments: sourceComments
   }
   compile.Sass.options('defaults')
   const file = src.replace(process.cwd() + '/', '')
@@ -51,7 +66,7 @@ const render = (options, emitter) => {
         fs.writeFileSync(sourceMap, JSON.stringify(result.map))
       }
     } else {
-      console.log(result)
+      if (!quiet) console.log(result)
     }
   })
 }
