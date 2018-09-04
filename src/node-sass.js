@@ -21,7 +21,6 @@ const fs = require('fs')
 
 const compile = require('sass.js/dist/sass.node')
 const render = (options, emitter) => {
-  console.log(options)
   const {
     src,
     outputStyle,
@@ -29,7 +28,8 @@ const render = (options, emitter) => {
     sourceMap,
     sourceMapRoot,
     sourceMapEmbed,
-    sourceMapContents
+    sourceMapContents,
+    dest
   } = options
   const compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
@@ -43,8 +43,7 @@ const render = (options, emitter) => {
 
   compile(file, compileOptions, function (result) {
     if (result.status === 0) {
-      const filename = `${file}`.replace(/\.s[ac]ss/g, '.css')
-      fs.writeFileSync(filename, result.text)
+      fs.writeFileSync(dest, result.text)
       if (sourceMap) {
         fs.writeFileSync(sourceMap, JSON.stringify(result.map))
       }

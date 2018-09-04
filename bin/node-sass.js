@@ -22,14 +22,14 @@ var fs = require('fs');
 
 var compile = require('sass.js/dist/sass.node');
 var render = function render(options, emitter) {
-  console.log(options);
   var src = options.src,
       outputStyle = options.outputStyle,
       omitSourceMapUrl = options.omitSourceMapUrl,
       sourceMap = options.sourceMap,
       sourceMapRoot = options.sourceMapRoot,
       sourceMapEmbed = options.sourceMapEmbed,
-      sourceMapContents = options.sourceMapContents;
+      sourceMapContents = options.sourceMapContents,
+      dest = options.dest;
 
   var compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
@@ -43,8 +43,7 @@ var render = function render(options, emitter) {
 
   compile(file, compileOptions, function (result) {
     if (result.status === 0) {
-      var filename = ('' + file).replace(/\.s[ac]ss/g, '.css');
-      fs.writeFileSync(filename, result.text);
+      fs.writeFileSync(dest, result.text);
       if (sourceMap) {
         fs.writeFileSync(sourceMap, JSON.stringify(result.map));
       }
