@@ -29,14 +29,17 @@ const render = (options, emitter) => {
     sourceMapRoot,
     sourceMapEmbed,
     sourceMapContents,
-    dest
+    dest,
+    indentType,
+    indentWidth
   } = options
   const compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
     sourceMapRoot,
     sourceMapEmbed,
     sourceMapContents,
-    sourceMapOmitUrl: omitSourceMapUrl
+    sourceMapOmitUrl: omitSourceMapUrl,
+    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' ')
   }
   compile.Sass.options('defaults')
   const file = src.replace(process.cwd() + '/', '')
@@ -57,7 +60,7 @@ const render = (options, emitter) => {
  * Initialize CLI
  */
 
-var cli = meow({
+const cli = meow({
   pkg: '../package.json',
   help: [
     'Usage:',

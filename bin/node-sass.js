@@ -29,14 +29,17 @@ var render = function render(options, emitter) {
       sourceMapRoot = options.sourceMapRoot,
       sourceMapEmbed = options.sourceMapEmbed,
       sourceMapContents = options.sourceMapContents,
-      dest = options.dest;
+      dest = options.dest,
+      indentType = options.indentType,
+      indentWidth = options.indentWidth;
 
   var compileOptions = {
     style: compile.Sass.style[outputStyle || 'nested'],
     sourceMapRoot: sourceMapRoot,
     sourceMapEmbed: sourceMapEmbed,
     sourceMapContents: sourceMapContents,
-    sourceMapOmitUrl: omitSourceMapUrl
+    sourceMapOmitUrl: omitSourceMapUrl,
+    indent: ''.padEnd(indentWidth || 2, indentType === 'tab' ? '\t' : ' ')
   };
   compile.Sass.options('defaults');
   var file = src.replace(process.cwd() + '/', '');
