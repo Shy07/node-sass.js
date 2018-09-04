@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 /**
  * This file is a modified version of the original node-sass executable found here:
@@ -7,110 +8,47 @@
  * It has been modified to use chokidar instead of Gaze when watching directories and files.
  */
 
- var Emitter = require('events').EventEmitter,
- forEach = require('async-foreach').forEach,
- chokidar = require('chokidar'),
- grapher = require('sass-graph'),
- meow = require('meow'),
- util = require('util'),
- path = require('path'),
- glob = require('glob'),
- stdout = require('stdout-stream'),
- stdin = require('get-stdin'),
- fs = require('fs');
+var Emitter = require('events').EventEmitter;
+var forEach = require('async-foreach').forEach;
+var chokidar = require('chokidar');
+var grapher = require('sass-graph');
+var meow = require('meow');
+var util = require('util');
+var path = require('path');
+var glob = require('glob');
+var stdout = require('stdout-stream');
+var stdin = require('get-stdin');
+var fs = require('fs');
 
-const compile = require('sass.js/dist/sass.node')
-const render = (options, emitter) => {
-  const { src } = options
-  const compileOptions = {
-    style: compile.Sass.style.expanded,
-  }
+var compile = require('sass.js/dist/sass.node');
+var render = function render(options, emitter) {
+  var src = options.src;
+
+  var compileOptions = {
+    style: compile.Sass.style.expanded
+  };
   compile.Sass.options('defaults');
-  const file = src.replace(process.cwd() + '/', '')
+  var file = src.replace(process.cwd() + '/', '');
   compile(file, compileOptions, function (result) {
     if (result.text) {
-      const filename = `${file}`.replace(/\.s[ac]ss/g, '.css')
-      fs.writeFileSync(filename, result.text)
+      var filename = ('' + file).replace(/\.s[ac]ss/g, '.css');
+      fs.writeFileSync(filename, result.text);
     } else {
-      console.log(result)
+      console.log(result);
     }
-  })
-}
+  });
+};
 
 /**
  * Initialize CLI
  */
 
- var cli = meow({
+var cli = meow({
   pkg: '../package.json',
-  help: [
-  'Usage:',
-  '  node-sass-chokidar [options] <input.scss>',
-  '  cat <input.scss> | node-sass-chokidar [options] > output.css',
-  '',
-  'Example: Compile foobar.scss to foobar.css',
-  '  node-sass-chokidar --output-style compressed foobar.scss > foobar.css',
-  '  cat foobar.scss | node-sass-chokidar --output-style compressed > foobar.css',
-  '',
-  'Example: Watch the sass directory for changes, compile with sourcemaps to the css directory',
-  '  node-sass-chokidar --watch --output css',
-  '    --source-map true --source-map-contents sass',
-  '',
-  'Options',
-  '  -w, --watch                Watch a directory or file',
-  '  -m, --match-regex          Only watches files in a directory that match the regular expression',
-  '  -o, --output               Output directory',
-  '  -x, --omit-source-map-url  Omit source map URL comment from output',
-  '  -i, --indented-syntax      Treat data from stdin as sass code (versus scss)',
-  '  -q, --quiet                Suppress log output except on error',
-  '  -v, --version              Prints version info',
-  '  --skip-initial             Skips initial build when passing the --watch flag',
-  '  --output-style             CSS output style (nested | expanded | compact | compressed)',
-  '  --indent-type              Indent type for output CSS (space | tab)',
-  '  --indent-width             Indent width; number of spaces or tabs (maximum value: 10)',
-  '  --linefeed                 Linefeed style (cr | crlf | lf | lfcr)',
-  '  --source-comments          Include debug info in output',
-  '  --source-map               Emit source map',
-  '  --source-map-contents      Embed include contents in map',
-  '  --source-map-embed         Embed sourceMappingUrl as data URI',
-  '  --source-map-root          Base path, will be emitted in source-map as is',
-  '  --include-path             Path to look for imported files',
-  '  --follow                   Follow symlinked directories',
-  '  --precision                The amount of precision allowed in decimal numbers',
-  '  --error-bell               Output a bell character on errors',
-  '  --importer                 Path to .js file containing custom importer',
-  '  --functions                Path to .js file containing custom functions',
-  '  --use-polling              Watch using polling (chokidars\'s polling option)',
-  '  --polling-interval         Interval of filesystem folling if polling is being used',
-  '  --help                     Print usage info'
-  ].join('\n')
+  help: ['Usage:', '  node-sass.js [options] <input.scss>', '  cat <input.scss> | node-sass.js [options] > output.css', '', 'Example: Compile foobar.scss to foobar.css', '  node-sass.js --output-style compressed foobar.scss > foobar.css', '  cat foobar.scss | node-sass.js --output-style compressed > foobar.css', '', 'Example: Watch the sass directory for changes, compile with sourcemaps to the css directory', '  node-sass.js --watch --output css', '    --source-map true --source-map-contents sass', '', 'Options', '  -w, --watch                Watch a directory or file', '  -m, --match-regex          Only watches files in a directory that match the regular expression', '  -o, --output               Output directory', '  -x, --omit-source-map-url  Omit source map URL comment from output', '  -i, --indented-syntax      Treat data from stdin as sass code (versus scss)', '  -q, --quiet                Suppress log output except on error', '  -v, --version              Prints version info', '  --skip-initial             Skips initial build when passing the --watch flag', '  --output-style             CSS output style (nested | expanded | compact | compressed)', '  --indent-type              Indent type for output CSS (space | tab)', '  --indent-width             Indent width; number of spaces or tabs (maximum value: 10)', '  --linefeed                 Linefeed style (cr | crlf | lf | lfcr)', '  --source-comments          Include debug info in output', '  --source-map               Emit source map', '  --source-map-contents      Embed include contents in map', '  --source-map-embed         Embed sourceMappingUrl as data URI', '  --source-map-root          Base path, will be emitted in source-map as is', '  --include-path             Path to look for imported files', '  --follow                   Follow symlinked directories', '  --precision                The amount of precision allowed in decimal numbers', '  --error-bell               Output a bell character on errors', '  --importer                 Path to .js file containing custom importer', '  --functions                Path to .js file containing custom functions', '  --use-polling              Watch using polling (chokidars\'s polling option)', '  --polling-interval         Interval of filesystem folling if polling is being used', '  --help                     Print usage info'].join('\n')
 }, {
-  boolean: [
-  'error-bell',
-  'follow',
-  'use-polling',
-  'indented-syntax',
-  'omit-source-map-url',
-  'quiet',
-  'skip-initial',
-  'source-map-embed',
-  'source-map-contents',
-  'source-comments',
-  'watch'
-  ],
-  string: [
-  'functions',
-  'importer',
-  'include-path',
-  'indent-type',
-  'linefeed',
-  'output',
-  'output-style',
-  'precision',
-  'source-map-root',
-  'match-regex',
-  'polling-interval',
-  ],
+  boolean: ['error-bell', 'follow', 'use-polling', 'indented-syntax', 'omit-source-map-url', 'quiet', 'skip-initial', 'source-map-embed', 'source-map-contents', 'source-comments', 'watch'],
+  string: ['functions', 'importer', 'include-path', 'indent-type', 'linefeed', 'output', 'output-style', 'precision', 'source-map-root', 'match-regex', 'polling-interval'],
   alias: {
     c: 'source-comments',
     i: 'indented-syntax',
@@ -130,7 +68,7 @@ const render = (options, emitter) => {
     quiet: false,
     'use-polling': false,
     'skip-initial': false,
-    'polling-interval': 100,
+    'polling-interval': 100
   }
 });
 
@@ -142,7 +80,7 @@ const render = (options, emitter) => {
  * @api private
  */
 
- function isDirectory(filePath) {
+function isDirectory(filePath) {
   var isDir = false;
   try {
     var absolutePath = path.resolve(filePath);
@@ -159,10 +97,10 @@ const render = (options, emitter) => {
  * @api private
  */
 
- function getEmitter() {
+function getEmitter() {
   var emitter = new Emitter();
 
-  emitter.on('error', function(err) {
+  emitter.on('error', function (err) {
     if (options.errorBell) {
       err += '\x07';
     }
@@ -172,7 +110,7 @@ const render = (options, emitter) => {
     }
   });
 
-  emitter.on('warn', function(data) {
+  emitter.on('warn', function (data) {
     if (!options.quiet) {
       console.warn(data);
     }
@@ -191,8 +129,7 @@ const render = (options, emitter) => {
  * @api private
  */
 
- function getOptions(args, options) {
-
+function getOptions(args, options) {
   var cssDir, sassDir, file, mapDir;
   options.src = args[0];
 
@@ -202,9 +139,7 @@ const render = (options, emitter) => {
   if (args[1]) {
     options.dest = path.resolve(args[1]);
   } else if (options.output) {
-    options.dest = path.join(
-      path.resolve(options.output),
-      [path.basename(options.src, path.extname(options.src)), '.css'].join(''));  // replace ext.
+    options.dest = path.join(path.resolve(options.output), [path.basename(options.src, path.extname(options.src)), '.css'].join('')); // replace ext.
   }
 
   if (options.directory) {
@@ -215,7 +150,7 @@ const render = (options, emitter) => {
   }
 
   if (options.sourceMap) {
-    if(!options.sourceMapOriginal) {
+    if (!options.sourceMapOriginal) {
       options.sourceMapOriginal = options.sourceMap;
     }
 
@@ -244,7 +179,7 @@ function passesRegex(options, file) {
   if (options.matchRegex) {
     var fileName = file.split('/');
     fileName = fileName[fileName.length - 1];
-    var reg = RegExp(options.matchRegex)
+    var reg = RegExp(options.matchRegex);
     if (!reg.test(fileName)) {
       return false;
     }
@@ -260,9 +195,8 @@ function passesRegex(options, file) {
  * @api private
  */
 
- function watch(options, emitter) {
-
-  var buildGraph = function(options) {
+function watch(options, emitter) {
+  var buildGraph = function buildGraph(options) {
     var graph;
     var graphOptions = {
       loadPaths: options.includePath,
@@ -293,10 +227,11 @@ function passesRegex(options, file) {
     followSymlinks: options.follow,
     usePolling: options.usePolling,
     interval: +options.pollingInterval,
-    ignoreInitial: options.skipInitial,
+    ignoreInitial: options.skipInitial
   });
 
-  watcher.on('error', function(error) {
+  /* eslint handle-callback-err: "off" */
+  watcher.on('error', function (error) {
     emitter.emit.bind(emitter, 'error');
   });
 
@@ -308,19 +243,19 @@ function passesRegex(options, file) {
 
     // descendents may be added, so we need a new graph
     graph = buildGraph(options);
-    graph.visitAncestors(file, function(parent) {
+    graph.visitAncestors(file, function (parent) {
       files.push(parent);
     });
 
     // Add children to watcher
-    graph.visitDescendents(file, function(child) {
+    graph.visitDescendents(file, function (child) {
       if (paths.indexOf(child) === -1) {
         paths.push(child);
         watcher.add(child);
       }
     });
 
-    files.forEach(function(file) {
+    files.forEach(function (file) {
       if (path.basename(file)[0] !== '_' && passesRegex(options, file)) {
         if (options.directory) {
           if (file.indexOf(path.resolve(options.directory)) !== -1) {
@@ -335,9 +270,7 @@ function passesRegex(options, file) {
     });
   }
 
-  watcher
-  .on('change', changeHandler)
-  .on('add', function(file) {
+  watcher.on('change', changeHandler).on('add', function (file) {
     if (path.basename(file)[0] !== '_' && passesRegex(options, file)) {
       if (options.directory) {
         if (file.indexOf(path.resolve(options.directory)) !== -1) {
@@ -347,7 +280,7 @@ function passesRegex(options, file) {
         renderFile(file, options, emitter);
       }
     }
-  })
+  });
 }
 
 /**
@@ -358,7 +291,7 @@ function passesRegex(options, file) {
  * @api private
  */
 
- function run(options, emitter) {
+function run(options, emitter) {
   if (!Array.isArray(options.includePath)) {
     options.includePath = [options.includePath];
   }
@@ -376,8 +309,9 @@ function passesRegex(options, file) {
     emitter.emit('error', 'The --source-map option must be either a boolean or directory when compiling a directory');
   }
 
+  /* eslint no-useless-escape: "off" */
   if (options.importer) {
-    if ((path.resolve(options.importer) === path.normalize(options.importer).replace(/(.+)([\/|\\])$/, '$1'))) {
+    if (path.resolve(options.importer) === path.normalize(options.importer).replace(/(.+)([\/|\\])$/, '$1')) {
       options.importer = require(options.importer);
     } else {
       options.importer = require(path.resolve(options.importer));
@@ -385,7 +319,7 @@ function passesRegex(options, file) {
   }
 
   if (options.functions) {
-    if ((path.resolve(options.functions) === path.normalize(options.functions).replace(/(.+)([\/|\\])$/, '$1'))) {
+    if (path.resolve(options.functions) === path.normalize(options.functions).replace(/(.+)([\/|\\])$/, '$1')) {
       options.functions = require(options.functions);
     } else {
       options.functions = require(path.resolve(options.functions));
@@ -409,7 +343,7 @@ function passesRegex(options, file) {
  * @param {Object} emitter
  * @api private
  */
- function renderFile(file, options, emitter) {
+function renderFile(file, options, emitter) {
   options = getOptions([path.resolve(file)], options);
   if (options.watch) {
     emitter.emit('warn', util.format('=> changed: %s', file));
@@ -426,21 +360,21 @@ function passesRegex(options, file) {
  * @param {Object} emitter
  * @api private
  */
- function renderDir(options, emitter) {
+function renderDir(options, emitter) {
   var globPath = path.resolve(options.directory, '**/*.{sass,scss}');
-  glob(globPath, { ignore: '**/_*', follow: options.follow }, function(err, files) {
+  glob(globPath, { ignore: '**/_*', follow: options.follow }, function (err, files) {
     if (err) {
       return emitter.emit('error', util.format('You do not have permission to access this path: %s.', err.path));
     } else if (!files.length) {
       return emitter.emit('warn', 'No input files were found.');
     }
 
-    forEach(files, function(subject) {
+    forEach(files, function (subject) {
       emitter.once('done', this.async());
       if (passesRegex(options, subject)) {
         renderFile(subject, options, emitter);
       }
-    }, function(successful, arr) {
+    }, function (successful, arr) {
       var outputDir = path.join(process.cwd(), options.output);
       emitter.emit('warn', util.format('Wrote %s CSS files to %s', arr.length, outputDir));
       process.exit();
@@ -452,38 +386,28 @@ function passesRegex(options, file) {
  * Arguments and options
  */
 
- var options = getOptions(cli.input, cli.flags);
- var emitter = getEmitter();
+var options = getOptions(cli.input, cli.flags);
+var emitter = getEmitter();
 
 /**
  * Show usage if no arguments are supplied
  */
 
- if (!options.src && process.stdin.isTTY) {
-  emitter.emit('error', [
-    'Provide a Sass file to render',
-    '',
-    'Example: Compile foobar.scss to foobar.css',
-    '  node-sass-chokidar --output-style compressed foobar.scss > foobar.css',
-    '  cat foobar.scss | node-sass-chokidar --output-style compressed > foobar.css',
-    '',
-    'Example: Watch the sass directory for changes, compile with sourcemaps to the css directory',
-    '  node-sass-chokidar --watch --output css',
-    '    --source-map true --source-map-contents sass'
-    ].join('\n'));
+if (!options.src && process.stdin.isTTY) {
+  emitter.emit('error', ['Provide a Sass file to render', '', 'Example: Compile foobar.scss to foobar.css', '  node-sass.js --output-style compressed foobar.scss > foobar.css', '  cat foobar.scss | node-sass.js --output-style compressed > foobar.css', '', 'Example: Watch the sass directory for changes, compile with sourcemaps to the css directory', '  node-sass.js --watch --output css', '    --source-map true --source-map-contents sass'].join('\n'));
 }
 
 /**
  * Apply arguments
  */
 
- if (options.src) {
+if (options.src) {
   if (isDirectory(options.src)) {
     options.directory = options.src;
   }
   run(options, emitter);
 } else if (!process.stdin.isTTY) {
-  stdin(function(data) {
+  stdin(function (data) {
     options.data = data;
     options.stdin = true;
     run(options, emitter);

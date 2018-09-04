@@ -1,11 +1,12 @@
 {
   "name": "node-sass.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A thin wrapper around sass.js bassing on node-sass-chokidar.",
   "bin": {
     "node-sass.js": "bin/node-sass.js"
   },
   "scripts": {
+    "build": "babel src --out-dir bin",
     "test": "node_modules/.bin/mocha test/{*,**/**}.js"
   },
   "files": [
@@ -40,6 +41,7 @@
     "stdout-stream": "^1.4.0"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
     "cross-spawn": "^3.0.0",
     "mocha": "^5.2.0",
     "rimraf": "^2.5.2"
