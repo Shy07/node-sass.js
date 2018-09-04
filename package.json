@@ -1,9 +1,9 @@
 {
-  "name": "node-sass-chokidar",
-  "version": "1.3.3",
-  "description": "A thin wrapper around node-sass to replicate the --watch --recursive but with chokidar instead of Gaze",
+  "name": "node-sass.js",
+  "version": "0.0.1",
+  "description": "A thin wrapper around sass.js bassing on node-sass-chokidar.",
   "bin": {
-    "node-sass-chokidar": "bin/node-sass-chokidar"
+    "node-sass.js": "bin/node-sass.js"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/{*,**/**}.js"
@@ -14,21 +14,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michaelwayman/node-sass-chokidar.git"
+    "url": "git+https://github.com/Shy07/node-sass.js.git"
   },
   "keywords": [
     "node-sass",
     "chokidar",
-    "node-sass-chokidar",
+    "node-sass.js",
     "libsass",
     "preprocessor"
   ],
   "author": "Michael Wayman",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/michaelwayman/node-sass-chokidar/issues"
+    "url": "https://github.com/Shy07/node-sass.js/issues"
   },
-  "homepage": "https://github.com/michaelwayman/node-sass-chokidar#readme",
+  "homepage": "https://github.com/Shy07/node-sass.js#readme",
   "dependencies": {
     "async-foreach": "^0.1.3",
     "chokidar": "^2.0.4",
