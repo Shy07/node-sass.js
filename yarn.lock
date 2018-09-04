@@ -1156,6 +1156,10 @@ sass-graph@^2.1.1:
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
 
+sass.js@^0.10.10:
+  version "0.10.10"
+  resolved "https://registry.yarnpkg.com/sass.js/-/sass.js-0.10.10.tgz#239b46c3279e3a166c7f68c9ff7808b69e2345f3"
+
 sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"

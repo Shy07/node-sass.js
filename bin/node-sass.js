@@ -19,7 +19,7 @@
  stdin = require('get-stdin'),
  fs = require('fs');
 
-const compile = require('../sass.js/dist/sass.node')
+const compile = require('sass.js/dist/sass.node')
 const render = (options, emitter) => {
   const { src } = options
   const compileOptions = {

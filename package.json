@@ -36,6 +36,7 @@
     "glob": "^7.0.3",
     "meow": "^3.7.0",
     "sass-graph": "^2.1.1",
+    "sass.js": "^0.10.10",
     "stdout-stream": "^1.4.0"
   },
   "devDependencies": {
