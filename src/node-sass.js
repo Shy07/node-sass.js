@@ -21,16 +21,33 @@ const fs = require('fs')
 
 const compile = require('sass.js/dist/sass.node')
 const render = (options, emitter) => {
-  const { src } = options
+  console.log(options)
+  const {
+    src,
+    outputStyle,
+    omitSourceMapUrl,
+    sourceMap,
+    sourceMapRoot,
+    sourceMapEmbed,
+    sourceMapContents
+  } = options
   const compileOptions = {
-    style: compile.Sass.style.expanded
+    style: compile.Sass.style[outputStyle || 'nested'],
+    sourceMapRoot,
+    sourceMapEmbed,
+    sourceMapContents,
+    sourceMapOmitUrl: omitSourceMapUrl
   }
   compile.Sass.options('defaults')
   const file = src.replace(process.cwd() + '/', '')
+
   compile(file, compileOptions, function (result) {
-    if (result.text) {
+    if (result.status === 0) {
       const filename = `${file}`.replace(/\.s[ac]ss/g, '.css')
       fs.writeFileSync(filename, result.text)
+      if (sourceMap) {
+        fs.writeFileSync(sourceMap, JSON.stringify(result.map))
+      }
     } else {
       console.log(result)
     }
