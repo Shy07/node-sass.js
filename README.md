@@ -2,7 +2,7 @@
 
 A thin wrapper around sass.js bassing on node-sass-chokidar.
 
-Why? Because I don't want waiting for compile libsass every every every time in my new projects.   
+Why? Because I don't want waiting for compile libsass every every every time in my new projects.  
 Development efficiency is better than compilation one, as a Rubyist, I think so.  
 
 ## Examples
