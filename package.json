@@ -23,7 +23,7 @@
     "libsass",
     "preprocessor"
   ],
-  "author": "Michael Wayman",
+  "author": "HSU Lynch",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Shy07/node-sass.js/issues"
