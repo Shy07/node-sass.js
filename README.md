@@ -8,22 +8,22 @@ Why? Because I don't want to compile node-sass every every every time in my proj
 
 ```
 # Build a directory
-node-sass-chokidar ./src -o ./build
+node-sass.js ./src -o ./build
 
 # Watch a directory:
-node-sass-chokidar ./src -o ./build --watch
+node-sass.js ./src -o ./build --watch
 
 # Watch a directory, don't perform an initial build until a change has occured:
-node-sass-chokidar ./src -o ./build --watch --skip-initial
+node-sass.js ./src -o ./build --watch --skip-initial
 
 # Watch a directory, include node_modules import path so we can import from there e.g. @import 'bulma/bulma.sass';
-node-sass-chokidar --include-path ./node_modules/ ./src -o ./src --watch
+node-sass.js --include-path ./node_modules/ ./src -o ./src --watch
 
 # Build a file
-node-sass-chokidar ./src/index.scss ./build/index.css
+node-sass.js ./src/index.scss ./build/index.css
 
 # Watch a single file and don't perform an initial build until a change has occured:
-node-sass-chokidar ./src/index.scss ./build/index.css --watch --skip-initial
+node-sass.js ./src/index.scss ./build/index.css --watch --skip-initial
 ```
 
 ____
