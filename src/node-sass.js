@@ -469,15 +469,18 @@ function renderDir (options, emitter) {
       return emitter.emit('warn', 'No input files were found.')
     }
 
-    forEach(files, function (subject) {
-      emitter.once('done', this.async())
-      if (passesRegex(options, subject)) {
-        renderFile(subject, options, emitter)
+    files.forEach(function (file) {
+      if (path.basename(file)[0] !== '_' && passesRegex(options, file)) {
+        if (options.directory) {
+          if (file.indexOf(path.resolve(options.directory)) !== -1) {
+            renderFile(file, options, emitter)
+          }
+        } else {
+          if (file.indexOf(path.resolve(options.src)) !== -1) {
+            renderFile(file, options, emitter)
+          }
+        }
       }
-    }, function (successful, arr) {
-      var outputDir = path.join(process.cwd(), options.output)
-      emitter.emit('warn', util.format('Wrote %s CSS files to %s', arr.length, outputDir))
-      process.exit()
     })
   })
 }
